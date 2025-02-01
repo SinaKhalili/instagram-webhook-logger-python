@@ -81,16 +81,11 @@ async def instagram_webhook(request: Request):
     payload = await request.json()
     print(f"Received webhook: {json.dumps(payload, indent=2)}")
     
-    # Create update record with timestamp and payload
     update = {
         "timestamp": datetime.now().isoformat(),
         "payload": payload
     }
-    
-    # Store update in memory
     received_updates.insert(0, update)
-    
-    # Save update to file
     save_update_to_file(update)
     
     return Response(status_code=200)
