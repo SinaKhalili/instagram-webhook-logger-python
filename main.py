@@ -53,7 +53,6 @@ async def root(
 ):
     print(f"Received request: {hub_mode}, {hub_verify_token}, {hub_challenge}")
     """Handle both displaying updates and webhook verification"""
-    # If this is a webhook verification request
     if hub_mode is not None:
         print("Verification Details:")
         print(f"- Received mode: {hub_mode}")
@@ -68,8 +67,7 @@ async def root(
             print("Verification failed - token mismatch")
             raise HTTPException(status_code=400, detail="Invalid verification request")
     
-    # If it's a regular request to see updates
-    return JSONResponse(received_updates)
+    return JSONResponse({"message": "ok"})
 
 @app.post("/")
 async def instagram_webhook(request: Request):
@@ -105,11 +103,10 @@ async def setup_webhook_subscriptions():
     
     async with httpx.AsyncClient() as client:
         try:
-            # Subscribe to desired webhook fields for tracking likes and comments
             response = await client.post(
                 f"{INSTAGRAM_API_URL}/me/subscribed_apps",
                 params={
-                    "subscribed_fields": "comments,story_insights",  # Add other fields as needed
+                    "subscribed_fields": "comments,messages,story_insights",
                     "access_token": ACCESS_TOKEN
                 }
             )
